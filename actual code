@@ -1,0 +1,372 @@
+import javax.swing.*;
+import java.awt.*;
+import java.util.Objects;
+
+
+public class Main {
+
+    public static void main(String[] args){
+        JFrame frame= new JFrame("BMI-Calculator");
+
+        ImageIcon icon= new ImageIcon(Objects.requireNonNull(Main.class.getResource("10481308.png")));
+
+        JPanel Panel1 = new JPanel(new BorderLayout());
+        Panel1.setBackground(new Color(25, 25, 25));
+        JPanel Panel2 = new JPanel(new BorderLayout());
+        Panel2.setBackground(new Color(25, 25, 25));
+
+
+
+        JPanel centerPanel1= new JPanel(new FlowLayout());
+        centerPanel1.setBackground(new Color(25, 25, 25));
+        centerPanel1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        Panel1.add(centerPanel1, BorderLayout.CENTER);
+
+
+
+        JPanel bottomPanel1 = new JPanel(new GridBagLayout());
+        bottomPanel1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        bottomPanel1.setBackground(new Color(25, 25, 25));
+        Panel1.add(bottomPanel1,BorderLayout.SOUTH);
+
+        JPanel bottomPanel2 = new JPanel(new GridBagLayout());
+        bottomPanel2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        bottomPanel2.setBackground(new Color(25, 25, 25));
+        Panel2.add(bottomPanel2,BorderLayout.SOUTH);
+
+
+
+        JPanel centerPanel2= new JPanel(new GridBagLayout());
+        centerPanel2.setBackground(new Color(25, 25, 25));
+        centerPanel2.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        Panel2.add(centerPanel2, BorderLayout.CENTER);
+
+        JLabel welcomeText= new JLabel("Welcome to the BMI Calculator ");
+        welcomeText.setForeground(Color.WHITE);
+        welcomeText.setFont(new Font("Arial", Font.BOLD, 15));
+        welcomeText.setHorizontalAlignment(JLabel.CENTER);
+        welcomeText.setVerticalAlignment(JLabel.CENTER);
+
+        JLabel topText = new JLabel("Enter your information to Calculate the BMI ");
+        topText.setForeground(Color.WHITE);
+        topText.setFont(new Font("Arial", Font.ITALIC, 15));
+        topText.setHorizontalAlignment(JLabel.CENTER);
+        topText.setVerticalAlignment(JLabel.CENTER);
+
+
+        JLabel height = new JLabel("Enter your height (cm) :");
+        height.setForeground(Color.WHITE);
+        height.setFont(new Font("Arial", Font.PLAIN, 12));
+        JTextField Height = new JTextField(12);
+
+        JLabel weight = new JLabel("Enter your weight (kg) :");
+        weight.setForeground(Color.WHITE);
+        weight.setFont(new Font("Arial", Font.PLAIN, 12));
+        JTextField Weight = new JTextField(12);
+
+
+        JLabel result = new JLabel();
+        result.setForeground(Color.WHITE);
+        result.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        JTextArea explanation= new JTextArea(3, 15);
+        explanation.setFont(new Font("Arial", Font.PLAIN, 15));
+        explanation.setEditable(false);
+        explanation.setVisible(false);
+
+        JButton colorChooser= new JButton(" pick background Color ");
+        colorChooser.setForeground(Color.WHITE);
+        colorChooser.setPreferredSize(new Dimension(200, 40));
+        colorChooser.setFocusable(false);
+        colorChooser.setBackground(new Color(50, 60, 70));
+        colorChooser.addActionListener(e -> {
+            JColorChooser chooser= new JColorChooser();
+
+            Color color= JColorChooser.showDialog(null, "pick your Color", new Color(25, 25, 25));
+
+            Panel1.setBackground(color);
+            centerPanel1.setBackground(color);
+            bottomPanel1.setBackground(color);
+            Panel2.setBackground(color);
+            centerPanel2.setBackground(color);
+            bottomPanel2.setBackground(color);
+            if (color.equals(Color.WHITE) || color.equals(Color.white)){
+                welcomeText.setForeground(Color.BLACK);
+                topText.setForeground(Color.BLACK);
+                height.setForeground(Color.BLACK);
+                weight.setForeground(Color.BLACK);
+                result.setForeground(Color.BLACK);
+                explanation.setForeground(Color.BLACK);
+            }else {
+                welcomeText.setForeground(Color.WHITE);
+                topText.setForeground(Color.WHITE);
+                height.setForeground(Color.WHITE);
+                weight.setForeground(Color.WHITE);
+                result.setForeground(Color.WHITE);
+                explanation.setForeground(Color.WHITE);
+            }
+
+        });
+
+
+        Boolean[] isFemale = {true};
+
+        String[] sexes = { " select your gender ", " rather not say ", " Male ", " Female "};
+        JComboBox<String> comboBox = new JComboBox<>(sexes);
+        comboBox.addActionListener(e -> {
+            if (Objects.equals(comboBox.getSelectedItem(), " Male ")){
+                isFemale[0] = false;
+            } else if (Objects.equals(comboBox.getSelectedItem(), " Female ")) {
+                isFemale[0] = true;
+            }else {
+                isFemale[0] = null;
+            }
+        });
+
+        JButton calculate= new JButton(" Calculate my BMI ");
+        calculate.setForeground(Color.WHITE);
+        calculate.setPreferredSize(new Dimension(150,40));
+        calculate.setFocusable(false);
+        calculate.setBackground(new Color(50,60,70));
+        calculate.addActionListener(e -> {
+            double BMI = 0;
+            if (Height.getText().trim().isEmpty()){
+                height.setText("** please Enter your height **");
+                height.setForeground(Color.RED);
+                result.setText("");
+                if (Weight.getText().trim().isEmpty()){
+                    weight.setText("** please Enter your weight **");
+                    weight.setForeground(Color.RED);
+                }
+            } else if (Weight.getText().trim().isEmpty()) {
+                weight.setText("** please Enter your weight **");
+                weight.setForeground(Color.RED);
+                result.setText("");
+
+            }else if (!(Height.getText().trim().matches("\\d+")) || !(Weight.getText().trim().matches("\\d+"))) {
+                height.setText("** please Enter your height (  in numbers ) **");
+                height.setForeground(Color.RED);
+                weight.setText("** please Enter your weight ( in numbers ) **");
+                weight.setForeground(Color.RED);
+
+            } else {
+                int h = Integer.parseInt(Height.getText().trim());
+                int w = Integer.parseInt(Weight.getText().trim());
+                double h_in_m= (double) h /100;
+                double hsq_in_m= Math.pow(h_in_m, 2);
+                BMI = w / hsq_in_m;
+                weight.setText(("Enter your weight (kg) :"));
+                weight.setForeground(Color.WHITE);
+                height.setText("Enter your height (cm) :");
+                height.setForeground(Color.WHITE);
+
+                result.setText(" your BMI is : " + BMI);
+                frame.setSize(450, 550);
+                if (Boolean.FALSE.equals(isFemale[0])){
+                    if (BMI<18.5){
+                        explanation.setText(" you are Underweight ! : \n in men BMI is usually higher due to more muscle mass \n  if you are underweight you shouldnt go under heavy surgery ");
+                        explanation.setVisible(true);
+
+
+                    } else if (BMI>18.5 && BMI<25.0) {
+                        explanation.setText(" you have a Normal weight : \n in men BMI is usually higher due to more muscle mass \n  your weight is normal so you should be fine i guess ");
+                        explanation.setVisible(true);
+
+                    } else if (BMI>25.0 && BMI<30.0) {
+                        explanation.setText(" you are Overweight ! : \n in men BMI is usually higher due to more muscle mass \n  as said being overWeight for is not an immediate danger sign ");
+                        explanation.setVisible(true);
+
+                    } else if (BMI>30.0) {
+                        explanation.setText(" you are Obese ! : \n in men BMI is usually higher due to more muscle mass \n you better be a body builder or something cause otherwise you might wanna watch out for some disease like diabetes");
+                        explanation.setVisible(true);
+
+                    }
+                } else if (Boolean.TRUE.equals(isFemale[0])) {
+                    if (BMI<18.5){
+                        explanation.setText("you are Underweight ! : \n in women BMI is usually lower due to a higher body fat percentage \n as said before BMI does tend to be lower in women so this should not be too concerning");
+                        explanation.setVisible(true);
+
+
+
+                    } else if (BMI>18.5 && BMI<25.0) {
+                        explanation.setText("you have a Normal weight: \n in women BMI is usually lower due to a higher body fat percentage \n your BMI is normal so you are all good to go i guess");
+                        explanation.setVisible(true);
+
+
+
+                    } else if (BMI>25.0 && BMI<30.0) {
+                        explanation.setText("you are Overweight ! : \n in women BMI is usually lower due to a higher body fat percentage \n you can visit your doctor for better advice i dont know :(");
+                        explanation.setVisible(true);
+
+
+
+                    } else if (BMI>30.0) {
+                        explanation.setText("you are Obese ! : \n in women BMI is usually lower due to a higher body fat percentage \n  you might wanna be a little bit careful with your diet ");
+                        explanation.setVisible(true);
+
+                    }
+
+                } else{
+                    if (BMI<18.5){
+                        explanation.setText("you are Underweight ");
+                        explanation.setVisible(true);
+
+
+
+                    } else if (BMI>18.5 && BMI<25.0) {
+                        explanation.setText("you have a Normal weight");
+                        explanation.setVisible(true);
+
+
+
+                    } else if (BMI>25.0 && BMI<30.0) {
+                        explanation.setText("you are Overweight ");
+                        explanation.setVisible(true);
+
+
+
+                    } else if (BMI>30.0) {
+                        explanation.setText("you are Obese ");
+                        explanation.setVisible(true);
+
+                    }
+
+                }
+            }
+        });
+
+
+
+        JButton startButton= new JButton("Start");
+        startButton.setForeground(Color.WHITE);
+        startButton.setPreferredSize(new Dimension(200, 40));
+        startButton.setFocusable(false);
+        startButton.setBackground(new Color(50, 60, 70));
+        startButton.addActionListener(e -> {
+            frame.remove(Panel1);
+            frame.add(Panel2);
+            frame.setSize(450,450);
+            frame.revalidate();
+            frame.repaint();
+        });
+
+        JButton backButton= new JButton(" Back to first page ");
+        backButton.setForeground(Color.WHITE);
+        backButton.setPreferredSize(new Dimension(200,40));
+        backButton.setFocusable(false);
+        backButton.setBackground(new Color(50, 60, 70));
+        backButton.addActionListener(e -> {
+            frame.remove(Panel2);
+            frame.add(Panel1);
+            frame.setSize(400,250);
+            frame.revalidate();
+            frame.repaint();
+            result.setText("");
+            Height.setText("");
+            Weight.setText("");
+            weight.setText(("Enter your weight (kg) :"));
+            weight.setForeground(Color.WHITE);
+            height.setText("Enter your height (cm) :");
+            height.setForeground(Color.WHITE);
+            comboBox.setSelectedIndex(0);
+            explanation.setVisible(false);
+        });
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        GridBagConstraints Gbc = new GridBagConstraints();
+
+        Gbc.gridx= 0;
+        Gbc.gridy= 0;
+        Gbc.gridheight= 1;
+        Gbc.gridwidth= 3;
+        Gbc.insets= new Insets(50, 50, 50, 50);
+        Gbc.fill= GridBagConstraints.HORIZONTAL;
+        Gbc.anchor= GridBagConstraints.WEST;
+        centerPanel2.add(comboBox, Gbc);
+
+        Gbc.gridy= 1;
+        Gbc.gridx= 0;
+        Gbc.gridheight= 1;
+        Gbc.gridwidth= 3;
+        Gbc.insets= new Insets(5,5,5,5);
+        Gbc.anchor= GridBagConstraints.WEST;
+        centerPanel2.add(height, Gbc);
+
+        Gbc.gridx= 0;
+        Gbc.gridy= 2;
+        Gbc.gridwidth= 3;
+        Gbc.gridheight= 1;
+        Gbc.insets= new Insets(5,5,5,5);
+        Gbc.anchor = GridBagConstraints.WEST;
+        centerPanel2.add(Height, Gbc);
+
+        Gbc.gridx= 0;
+        Gbc.gridy= 3;
+        Gbc.gridheight= 1;
+        Gbc.gridwidth= 3;
+        Gbc.insets= new Insets(5,5,5,5);
+        Gbc.anchor = GridBagConstraints.WEST;
+        centerPanel2.add(weight, Gbc);
+
+        Gbc.gridx= 0;
+        Gbc.gridy= 4;
+        Gbc.gridheight= 1;
+        Gbc.gridwidth= 3;
+        Gbc.insets= new Insets(5,5,5,5);
+        Gbc.anchor = GridBagConstraints.WEST;
+        centerPanel2.add(Weight, Gbc);
+
+        Gbc.gridx= 0;
+        Gbc.gridy= 5;
+        Gbc.gridheight= 1;
+        Gbc.gridwidth= 3;
+        Gbc.insets= new Insets(15,15,15,15);
+        Gbc.anchor = GridBagConstraints.CENTER;
+        Gbc.fill = GridBagConstraints.HORIZONTAL;
+        centerPanel2.add(calculate, Gbc);
+
+        Gbc.gridx= 0;
+        Gbc.gridy= 6;
+        Gbc.gridheight= 1;
+        Gbc.gridwidth= 3;
+        Gbc.insets =new Insets(15,15,15,15);
+        Gbc.fill = GridBagConstraints.HORIZONTAL;
+        Gbc.anchor = GridBagConstraints.CENTER;
+        centerPanel2.add(result, Gbc);
+
+        Gbc.gridx= 0;
+        Gbc.gridy= 7;
+        Gbc.gridheight= 1;
+        Gbc.gridwidth= 3;
+        Gbc.insets = new Insets(5,5,5,5);
+        Gbc.fill = GridBagConstraints.HORIZONTAL;
+        Gbc.anchor = GridBagConstraints.WEST;
+        centerPanel2.add(explanation, Gbc);
+
+
+
+        Panel1.add(welcomeText, BorderLayout.NORTH);
+        bottomPanel1.add(startButton, gbc);
+        bottomPanel2.add(backButton, gbc);
+        centerPanel1.add(colorChooser);
+        Panel2.add(topText, BorderLayout.NORTH);
+
+
+
+
+
+
+        frame.setSize(400, 250);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        frame.setIconImage(icon.getImage());
+        frame.add(Panel1);
+
+    }
+}
+
+
