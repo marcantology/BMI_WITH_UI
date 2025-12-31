@@ -12,5 +12,6 @@ BMI calculator with  user interface
 
 
 icon image :
+*add this to your src file in your IDE for the program to work*
 
 <img width="512" height="512" alt="10481308" src="https://github.com/user-attachments/assets/02a28ea6-b960-406f-bde5-bcb3e8cfc2ca" />
